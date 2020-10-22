@@ -41,7 +41,8 @@ class Camera(BaseCamera):
 
     @staticmethod
     def frames():
-        camera = cv2.VideoCapture(Camera.video_source)
+        #camera = cv2.VideoCapture(Camera.video_source, cv2.CAP_V4L2)
+        camera = cv2.VideoCapture('nvarguscamerasrc ! video/x-raw(memory:NVMM), width=3280, height=2464, format=(string)NV12, framerate=(fraction)20/1 ! nvvidconv ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR ! appsink' , cv2.CAP_GSTREAMER)
         if not camera.isOpened():
             raise RuntimeError('Could not start camera.')
 
@@ -88,7 +89,8 @@ class Predictor(object):
 
 @celery.task(bind=True)
 def CaptureContinous(self, detector):
-    cap = cv2.VideoCapture(0)
+    #cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture('nvarguscamerasrc ! video/x-raw(memory:NVMM), width=3280, height=2464, format=(string)NV12, framerate=(fraction)20/1 ! nvvidconv ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR ! appsink' , cv2.CAP_GSTREAMER)
     _, image = cap.read()
     cap.release()
     output = detector.prediction(image)
@@ -119,7 +121,8 @@ def ObjectTracking(self):
     newdict = reduce(lambda a, b: reduce_tracking(a,b), myiter, dict())
     startID = max(map(int, newdict.keys()), default=0) + 1
     ct = CentroidTracker(startID=startID)
-    camera = cv2.VideoCapture(0)
+    #camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture('nvarguscamerasrc ! video/x-raw(memory:NVMM), width=3280, height=2464, format=(string)NV12, framerate=(fraction)20/1 ! nvvidconv ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR ! appsink' , cv2.CAP_GSTREAMER)
     if not camera.isOpened():
         raise RuntimeError('Could not start camera.')
 
