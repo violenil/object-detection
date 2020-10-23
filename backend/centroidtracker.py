@@ -14,7 +14,7 @@ class CentroidTracker():
         self.hour = datetime.now().strftime("%H")
         self.day = datetime.now().strftime("%Y-%m-%d")
         self.count = 0
-        self.count_per_hour = [] #will end up having 24 elements
+        self.count_per_hour = [*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*] #will end up having 24 elements
 
         # store the number of maximum consecutive frames a given
         # object is allowed to be marked as "disappeared" until we
@@ -31,7 +31,7 @@ class CentroidTracker():
             self.count += 1
         elif self.hour != datetime.now().strftime("%H"):
             self.hour = datetime.now().strftime("%H")
-            self.count_per_hour.append(self.count)
+            self.count_per_hour[self.hour] = self.count
             self.count = 1
         elif self.day != datetime.now().strftime("%Y-%m-%d"):
             myCsvRow = "{},".format(self.day) + ','.join(map(str, self.count_per_hour))+'\n'
