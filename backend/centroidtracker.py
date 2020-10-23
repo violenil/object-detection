@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 from scipy.spatial import distance as dist
 import numpy as np
@@ -13,8 +14,7 @@ class CentroidTracker():
         self.disappeared = dict()
         self.hour = datetime.now().strftime("%H")
         self.day = datetime.now().strftime("%Y-%m-%d")
-        self.count = 0
-        self.count_per_hour = [*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*] #will end up having 24 elements
+        self.count_per_hour = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #will end up having 24 elements
 
         # store the number of maximum consecutive frames a given
         # object is allowed to be marked as "disappeared" until we
@@ -27,22 +27,31 @@ class CentroidTracker():
         self.objects[self.nextObjectID] = centroid
         self.disappeared[self.nextObjectID] = 0
         self.nextObjectID += 1
-        if self.hour == datetime.now().strftime("%H") and self.day == datetime.now().strftime("%Y%m%d"):
-            self.count += 1
-        elif self.hour != datetime.now().strftime("%H"):
-            self.hour = datetime.now().strftime("%H")
-            self.count_per_hour[self.hour] = self.count
-            self.count = 1
-        elif self.day != datetime.now().strftime("%Y-%m-%d"):
+        self.hour = datetime.now().strftime("%H")
+        print(self.hour)
+        self.day = datetime.now().strftime("%Y-%m-%d")
+
+        if self.day == datetime.now().strftime("%Y-%m-%d"):
+            self.count_per_hour[int(self.hour)] += 1
             myCsvRow = "{},".format(self.day) + ','.join(map(str, self.count_per_hour))+'\n'
             f = open("ID", 'r')
             jetsonID = f.read()
-            with open('imgs/tracking_{}.csv'.format(jetsonID),'a+') as fd:
-                fd.write(myCsvRow)
-            self.day = datetime.now().strftime("%Y-%m-%d")
-            self.count = 1
-            self.count_per_hour = []
-        #myCsvRow = "{},{},\"{}\"\n".format(day, hour, list(self.objects.keys()))
+            if os.path.isfile('imgs/tracking_{}.csv'.format(jetsonID)):
+                lines = open('imgs/tracking_{}.csv'.format(jetsonID), 'r').readlines()
+                last_line = lines[-1]
+                day_of_last_line = last_line[:10]
+                if day_of_last_line == self.day:
+                    lines[-1] = myCsvRow
+                    open('imgs/tracking_{}.csv'.format(jetsonID), 'w+').writelines(lines)
+                elif day_of_last_line != self.day:
+                    self.count_per_hour = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #will end up having 24 elements
+                    self.count_per_hour[int(self.hour)] += 1
+                    with open('imgs/tracking_{}.csv'.format(jetsonID), 'a') as ff:
+                        ff.write(myCsvRow)
+            else:
+                line = myCsvRow
+                open('imgs/tracking_{}.csv'.format(jetsonID), 'w+').writelines(line)
+
 
     def deregister(self, objectID):
         # to deregister an object ID we delete the object ID from
