@@ -3,6 +3,7 @@ import os
 import glob
 import cv2
 import json
+import argparse
 import pandas as pd
 from functools import reduce
 from importlib import import_module
@@ -12,6 +13,18 @@ from datetime import datetime
 #from flask import Flask, Response, send_from_directory, request, Blueprint, abort
 from backend.utils import (reduce_month, reduce_year, reduce_hour,
         reduce_object, reduce_tracking)
+
+# Parse incoming objectID
+parser = argparse.ArgumentParser(description='Supply unique ID for device with -id')
+parser.add_argument('-id', type=str, nargs=1,
+                    help='Add a unique ID for the device.')
+
+args = parser.parse_args()
+jetsonID = args.id[0]
+print(jetsonID)
+IDfile = open("ID", "w")
+IDfile.write(jetsonID)
+IDfile.close()
 
 WIDTH = 320
 HEIGHT = 240

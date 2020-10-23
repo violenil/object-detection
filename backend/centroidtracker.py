@@ -11,6 +11,10 @@ class CentroidTracker():
         self.nextObjectID = startID
         self.objects = dict()
         self.disappeared = dict()
+        self.hour = datetime.now().strftime("%H")
+        self.day = datetime.now().strftime("%Y-%m-%d")
+        self.count = 0
+        self.count_per_hour = [] #will end up having 24 elements
 
         # store the number of maximum consecutive frames a given
         # object is allowed to be marked as "disappeared" until we
@@ -23,11 +27,22 @@ class CentroidTracker():
         self.objects[self.nextObjectID] = centroid
         self.disappeared[self.nextObjectID] = 0
         self.nextObjectID += 1
-        day = datetime.now().strftime("%Y%m%d")
-        hour = datetime.now().strftime("%H%M%S")
-        myCsvRow = "{},{},\"{}\"\n".format(day, hour, list(self.objects.keys()))
-        with open('imgs/tracking_{}.csv'.format(day),'a+') as fd:
-            fd.write(myCsvRow)
+        if self.hour == datetime.now().strftime("%H") and self.day == datetime.now().strftime("%Y%m%d"):
+            self.count += 1
+        elif self.hour != datetime.now().strftime("%H"):
+            self.hour = datetime.now().strftime("%H")
+            self.count_per_hour.append(self.count)
+            self.count = 1
+        elif self.day != datetime.now().strftime("%Y-%m-%d"):
+            myCsvRow = "{},".format(self.day) + ','.join(map(str, self.count_per_hour))+'\n'
+            f = open("ID", 'r')
+            jetsonID = f.read()
+            with open('imgs/tracking_{}.csv'.format(jetsonID),'a+') as fd:
+                fd.write(myCsvRow)
+            self.day = datetime.now().strftime("%Y-%m-%d")
+            self.count = 1
+            self.count_per_hour = []
+        #myCsvRow = "{},{},\"{}\"\n".format(day, hour, list(self.objects.keys()))
 
     def deregister(self, objectID):
         # to deregister an object ID we delete the object ID from
