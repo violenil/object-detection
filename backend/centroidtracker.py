@@ -17,6 +17,8 @@ class CentroidTracker():
         f = open("ID", 'r')
         jetsonID = f.read()
         if os.path.isfile('imgs/tracking_{}.csv'.format(jetsonID)):
+            lines = open('imgs/tracking_{}.csv'.format(jetsonID), 'r').readlines()
+            last_line = lines[-1]
             day_of_last_line = last_line[:10]
             if day_of_last_line == self.day:
                 count_of_last_line = [int(x) for x in last_line[11:].split(',')]
