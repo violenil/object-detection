@@ -14,7 +14,15 @@ class CentroidTracker():
         self.disappeared = dict()
         self.hour = datetime.now().strftime("%H")
         self.day = datetime.now().strftime("%Y-%m-%d")
-        self.count_per_hour = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #will end up having 24 elements
+        f = open("ID", 'r')
+        jetsonID = f.read()
+        if os.path.isfile('imgs/tracking_{}.csv'.format(jetsonID)):
+            day_of_last_line = last_line[:10]
+            if day_of_last_line == self.day:
+                count_of_last_line = [int(x) for x in last_line[11:].split(',')]
+                self.count_per_hour = count_of_last_line
+            else:
+                self.count_per_hour = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #will end up having 24 elements
 
         # store the number of maximum consecutive frames a given
         # object is allowed to be marked as "disappeared" until we
