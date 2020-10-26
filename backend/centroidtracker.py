@@ -21,11 +21,11 @@ class CentroidTracker():
         if os.path.isfile('imgs/tracking_{}.csv'.format(jetsonID)):
             with open('imgs/tracking_{}.csv'.format(jetsonID), 'r') as csvfile:
                 lines = csvfile.readlines()
-            last_line = lines[-1]
-            day_of_last_line = last_line[:10]
-            if day_of_last_line == self.day:
-                count_of_last_line = [int(x) for x in last_line[11:].split(',')]
-                self.count_per_hour = count_of_last_line
+                last_line = lines[-1]
+                day_of_last_line = last_line[:10]
+                if day_of_last_line == self.day:
+                    count_of_last_line = [int(x) for x in last_line[11:].split(',')]
+                    self.count_per_hour = count_of_last_line
         else:
             self.count_per_hour = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  # will end up having 24 elements
@@ -54,17 +54,17 @@ class CentroidTracker():
             if os.path.isfile('imgs/tracking_{}.csv'.format(jetsonID)):
                 with open('imgs/tracking_{}.csv'.format(jetsonID), 'r') as csvfile:
                     lines = csvfile.readlines()
-                last_line = lines[-1]
-                day_of_last_line = last_line[:10]
-                if day_of_last_line == self.day:
-                    lines[-1] = myCsvRow
-                    with open('imgs/tracking_{}.csv'.format(jetsonID), 'w+') as csvwrite:
-                        csvwrite.writelines(lines)
-                elif day_of_last_line != self.day:
-                    self.count_per_hour = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #will end up having 24 elements
-                    self.count_per_hour[int(self.hour)] += 1
-                    with open('imgs/tracking_{}.csv'.format(jetsonID), 'a') as ff:
-                        ff.write(myCsvRow)
+                    last_line = lines[-1]
+                    day_of_last_line = last_line[:10]
+                    if day_of_last_line == self.day:
+                        lines[-1] = myCsvRow
+                        with open('imgs/tracking_{}.csv'.format(jetsonID), 'w+') as csvwrite:
+                            csvwrite.writelines(lines)
+                    elif day_of_last_line != self.day:
+                        self.count_per_hour = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #will end up having 24 elements
+                        self.count_per_hour[int(self.hour)] += 1
+                        with open('imgs/tracking_{}.csv'.format(jetsonID), 'a') as ff:
+                            ff.write(myCsvRow)
             else:
                 line = myCsvRow
                 with open('imgs/tracking_{}.csv'.format(jetsonID), 'w+') as csvwrite:
