@@ -59,7 +59,7 @@ class CentroidTracker():
             myCsvRow = "{},".format(
                 self.day) + ','.join(map(str, self.count_per_hour))+'\n'
             csvwrite.writelines(self.old_days)
-            csvwrite.writeline(myCsvRow)
+            csvwrite.write(myCsvRow)
 
     def create_new_day(self):
         # will end up having 24 elements
