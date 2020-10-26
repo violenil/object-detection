@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from scipy.spatial import distance as dist
 import numpy as np
 
+
 class CentroidTracker():
     def __init__(self, maxDisappeared=50, startID=0):
         # initialize the next unique object ID along with two ordered
@@ -16,7 +17,7 @@ class CentroidTracker():
         self.day = datetime.now().strftime("%Y-%m-%d")
         with open("ID", 'r') as f:
 			jetsonID = f.read()
-		
+
         if os.path.isfile('imgs/tracking_{}.csv'.format(jetsonID)):
 			with open('imgs/tracking_{}.csv'.format(jetsonID), 'r') as csvfile:
 				lines = csvfile.readlines()
@@ -26,7 +27,8 @@ class CentroidTracker():
 				count_of_last_line = [int(x) for x in last_line[11:].split(',')]
 				self.count_per_hour = count_of_last_line
         else:
-            self.count_per_hour = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #will end up having 24 elements
+            self.count_per_hour = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  # will end up having 24 elements
 
         # store the number of maximum consecutive frames a given
         # object is allowed to be marked as "disappeared" until we
@@ -45,7 +47,8 @@ class CentroidTracker():
 
         if self.day == datetime.now().strftime("%Y-%m-%d"):
             self.count_per_hour[int(self.hour)] += 1
-            myCsvRow = "{},".format(self.day) + ','.join(map(str, self.count_per_hour))+'\n'
+            myCsvRow = "{},".format(
+                self.day) + ','.join(map(str, self.count_per_hour))+'\n'
             with open("ID", 'r') as f:
 				jetsonID = f.read()
             if os.path.isfile('imgs/tracking_{}.csv'.format(jetsonID)):
