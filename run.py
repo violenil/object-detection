@@ -20,7 +20,7 @@ parser.add_argument('-id', type=str, nargs=1,
                     help='Add a unique ID for the device.')
 
 args = parser.parse_args()
-jetsonID = args.id[0]
+jetsonID = args.id[0].strip()
 print(jetsonID)
 IDfile = open("ID", "w")
 IDfile.write(jetsonID)
