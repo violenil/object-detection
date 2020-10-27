@@ -49,7 +49,7 @@ class CentroidTracker():
 
         if self.day_of_current_line != self.day:
             myCsvRow = "{},".format(
-                self.day) + ','.join(map(str, self.count_per_hour))+'\n'
+                self.day_of_current_line) + ','.join(map(str, self.count_per_hour))+'\n'
             self.old_days.append(myCsvRow)
             self.day_of_current_line = self.day
             self.count_per_hour = self.create_new_day()
